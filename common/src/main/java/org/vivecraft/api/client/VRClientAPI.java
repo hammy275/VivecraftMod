@@ -13,7 +13,10 @@ import javax.annotation.Nullable;
  */
 public interface VRClientAPI {
 
-    static VRClientAPI getInstance() {
+    /**
+     * @return The Vivecraft API instance for interacting with Vivecraft's client API.
+     */
+    static VRClientAPI instance() {
         return VRClientAPIImpl.INSTANCE;
     }
 

@@ -12,9 +12,9 @@ import javax.annotation.Nullable;
 public interface VRAPI {
 
     /**
-     * @return The Vivecraft API instance for interacting with Vivecraft's API.
+     * @return The Vivecraft API instance for interacting with Vivecraft's common API.
      */
-    static VRAPI getInstance() {
+    static VRAPI instance() {
         return VRAPIImpl.INSTANCE;
     }
 

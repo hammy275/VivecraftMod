@@ -13,7 +13,10 @@ import org.vivecraft.client_vr.render.RenderPass;
  */
 public interface VRRenderingAPI {
 
-    static VRRenderingAPI getInstance() {
+    /**
+     * @return The Vivecraft API instance for interacting with Vivecraft's rendering API.
+     */
+    static VRRenderingAPI instance() {
         return VRRenderingAPIImpl.INSTANCE;
     }
 
