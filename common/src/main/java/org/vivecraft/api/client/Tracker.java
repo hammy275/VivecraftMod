@@ -38,17 +38,6 @@ public interface Tracker {
     TrackerTickType tickType();
 
     /**
-     * Called for the client player, to check if this tracker is currently causing the item to be used to not release
-     * the use key. In other words, if you want the item currently being held to act as the use key being held, one
-     * should call the use item function, then return true from this method while the item should still remain used.
-     * @param player The local player which is running this tracker.
-     * @return Whether the item should remain in use.
-     */
-    default boolean itemInUse(LocalPlayer player) {
-        return false;
-    }
-
-    /**
      * Called to reset this tracker's state. This is called whenever {@link #isActive(LocalPlayer)} returns false.
      *
      * @param player The local player.

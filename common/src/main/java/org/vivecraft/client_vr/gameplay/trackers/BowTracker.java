@@ -1,5 +1,6 @@
 package org.vivecraft.client_vr.gameplay.trackers;
 
+import org.vivecraft.api.client.ItemInUseTracker;
 import org.vivecraft.api.client.Tracker;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.extensions.PlayerExtension;
@@ -31,7 +32,7 @@ import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.network.packet.c2s.DrawPayloadC2S;
 import org.vivecraft.common.utils.MathUtils;
 
-public class BowTracker implements Tracker {
+public class BowTracker implements Tracker, ItemInUseTracker {
     private static final long MAX_DRAW_MILLIS = 1100L;
     private static final double NOTCH_DOT_THRESHOLD = 20F;
 

@@ -1,5 +1,6 @@
 package org.vivecraft.client_vr.gameplay.trackers;
 
+import org.vivecraft.api.client.ItemInUseTracker;
 import org.vivecraft.api.client.Tracker;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 
@@ -13,7 +14,7 @@ import org.joml.Vector3f;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.client_vr.VRData;
 
-public class EatingTracker implements Tracker {
+public class EatingTracker implements Tracker, ItemInUseTracker {
     private static final float MOUTH_TO_EYE_DISTANCE = 0.0F;
     private static final float THRESHOLD = 0.25F;
     private static final long EAT_TIME = 2100L;

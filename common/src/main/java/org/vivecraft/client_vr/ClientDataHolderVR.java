@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
+import org.vivecraft.api.client.ItemInUseTracker;
 import org.vivecraft.api.client.Tracker;
 import org.vivecraft.client_vr.gameplay.VRPlayer;
 import org.vivecraft.client_vr.gameplay.trackers.*;
@@ -44,6 +45,8 @@ public class ClientDataHolderVR {
 
     // list of all registered trackers
     private final List<Tracker> trackers = new ArrayList<>();
+    // list of all trackers that control holding item usage
+    private final List<ItemInUseTracker> itemInUseTrackers = new ArrayList<>();
 
     // our trackers
     public final BackpackTracker backpackTracker = createTracker(BackpackTracker::new);
@@ -136,6 +139,9 @@ public class ClientDataHolderVR {
             throw new IllegalArgumentException("Tracker is already added and should not be added again!");
         }
         this.trackers.add(tracker);
+        if (tracker instanceof ItemInUseTracker itemInUseTracker) {
+            this.itemInUseTrackers.add(itemInUseTracker);
+        }
     }
 
     /**
@@ -150,6 +156,6 @@ public class ClientDataHolderVR {
      * @return Whether some tracker is currently using an item.
      */
     public boolean isTrackerUsingItem(LocalPlayer player) {
-        return this.trackers.stream().anyMatch(tracker -> tracker.itemInUse(player));
+        return this.itemInUseTrackers.stream().anyMatch(tracker -> tracker.itemInUse(player));
     }
 }
