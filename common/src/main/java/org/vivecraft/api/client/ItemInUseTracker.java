@@ -15,8 +15,6 @@ public interface ItemInUseTracker {
      * @param player The local player which is running this tracker.
      * @return Whether the item should remain in use.
      */
-    default boolean itemInUse(LocalPlayer player) {
-        return false;
-    }
+    boolean itemInUse(LocalPlayer player);
 
 }
