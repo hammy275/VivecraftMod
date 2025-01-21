@@ -34,6 +34,7 @@ dependencies {
     forgeRuntimeLibrary("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}:natives-linux")
     forgeRuntimeLibrary("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}:natives-macos")
     forgeRuntimeLibrary("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}:natives-windows")
+    forgeRuntimeLibrary("com.illposed.osc:javaosc-core:0.9") { transitive = false }
 
     // shadow the natives
     bundle("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}") { transitive = false }
