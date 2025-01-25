@@ -96,3 +96,8 @@ accessible method net/minecraft/world/item/BrushItem spawnDustParticles (Lnet/mi
 
 # do not kick climbing players
 accessible field net/minecraft/server/network/ServerGamePacketListenerImpl aboveGroundTickCount I
+
+# to have a custom crosshair shader
+accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;ILnet/minecraft/client/renderer/RenderType$CompositeState;)Lnet/minecraft/client/renderer/RenderType$CompositeRenderType;
+accessible field net/minecraft/client/renderer/RenderStateShard NO_DEPTH_TEST Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
+accessible field net/minecraft/client/renderer/RenderStateShard POSITION_TEXTURE_COLOR_SHADER Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
