@@ -36,10 +36,6 @@ public final class VRClientAPIImpl implements VRClientAPI {
         return this.maxPoseHistorySize;
     }
 
-    public void setMaxPoseHistorySize(int newSize) {
-        this.maxPoseHistorySize = Math.max(this.maxPoseHistorySize, newSize);
-    }
-
     @Nullable
     @Override
     public VRPose getLatestRoomPose() {
@@ -147,7 +143,7 @@ public final class VRClientAPIImpl implements VRClientAPI {
         if (maxTicksBack <= 0) {
             throw new IllegalArgumentException("Must call requestTicksOfHistory() with a positive number.");
         }
-        setMaxPoseHistorySize(Math.min(maxTicksBack, MAX_CONFIGURABLE_HISTORY_TICKS));
+        this.maxPoseHistorySize = Math.max(this.maxPoseHistorySize, Math.min(maxTicksBack, MAX_CONFIGURABLE_HISTORY_TICKS));
     }
 
     @Override
