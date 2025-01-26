@@ -259,7 +259,7 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
     // or if shaders are on, and option AFTER_SHADER is selected
     @Inject(method = "renderLevel", at = @At("RETURN"))
     private void vivecraft$renderVrStuffFinal(
-        CallbackInfo ci, @Local(ordinal = 0) float partialTick)
+        CallbackInfo ci, @Local(ordinal = 0) float partialTick, @Share("guiRendered") LocalBooleanRef guiRendered)
     {
         if (RenderPassType.isVanilla()) return;
 

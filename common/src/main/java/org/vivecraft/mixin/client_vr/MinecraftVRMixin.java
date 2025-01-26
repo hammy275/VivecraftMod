@@ -21,6 +21,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.server.IntegratedServer;
@@ -177,6 +178,10 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Shadow
     @Final
     private DeltaTracker.Timer timer;
+
+    @Shadow
+    @Final
+    private RenderBuffers renderBuffers;
 
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/ResourceLoadStateTracker;startReload(Lnet/minecraft/client/ResourceLoadStateTracker$ReloadReason;Ljava/util/List;)V"), index = 0)
     private ResourceLoadStateTracker.ReloadReason vivecraft$initVivecraft(
