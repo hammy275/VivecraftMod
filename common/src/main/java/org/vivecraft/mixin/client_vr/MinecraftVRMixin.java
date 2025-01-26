@@ -21,7 +21,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.server.IntegratedServer;
@@ -98,6 +97,9 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Unique
     private List<String> vivecraft$resourcepacks;
 
+    @Unique
+    private CameraType vivecraft$lastCameraType;
+
     @Final
     @Shadow
     public Gui gui;
@@ -131,10 +133,6 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
 
     @Shadow
     private ProfileResults fpsPieResults;
-
-    @Shadow
-    @Final
-    private RenderBuffers renderBuffers;
 
     @Shadow
     @Final
@@ -180,8 +178,10 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Final
     private DeltaTracker.Timer timer;
 
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setOverlay(Lnet/minecraft/client/gui/screens/Overlay;)V"), index = 0)
-    private Overlay vivecraft$initVivecraft(Overlay overlay) {
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/ResourceLoadStateTracker;startReload(Lnet/minecraft/client/ResourceLoadStateTracker$ReloadReason;Ljava/util/List;)V"), index = 0)
+    private ResourceLoadStateTracker.ReloadReason vivecraft$initVivecraft(
+        ResourceLoadStateTracker.ReloadReason reloadReason)
+    {
         RenderPassManager.INSTANCE = new RenderPassManager((MainTarget) this.mainRenderTarget);
         VRSettings.initSettings();
         new Thread(UpdateChecker::checkForUpdates, "VivecraftUpdateThread").start();
@@ -216,7 +216,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                 }
             }
         });
-        return overlay;
+        return reloadReason;
     }
 
     @Inject(method = "onGameLoadFinished", at = @At("TAIL"))
@@ -799,6 +799,10 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     private void vivecraft$switchVRState(boolean vrActive) {
         VRState.VR_RUNNING = vrActive;
         if (vrActive) {
+            // force first person camera in VR
+            this.vivecraft$lastCameraType = this.options.getCameraType();
+            this.options.setCameraType(CameraType.FIRST_PERSON);
+
             if (this.player != null) {
                 // snap room origin to the player
                 ClientDataHolderVR.getInstance().vrPlayer.snapRoomOriginToPlayerEntity(this.player, false, false);
@@ -814,6 +818,11 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
             GuiHandler.GUI_POS_ROOM = null;
             GuiHandler.GUI_ROTATION_ROOM = null;
             GuiHandler.GUI_SCALE = 1.0F;
+
+            // reset camera
+            if (this.vivecraft$lastCameraType != null) {
+                this.options.setCameraType(this.vivecraft$lastCameraType);
+            }
 
             if (this.player != null) {
                 // remove vr player instance
