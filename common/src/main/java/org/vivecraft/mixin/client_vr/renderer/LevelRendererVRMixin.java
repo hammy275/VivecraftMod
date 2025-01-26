@@ -71,9 +71,6 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
     @Unique
     private Entity vivecraft$renderedEntity;
 
-    @Unique
-    private boolean vivecraft$guiRendered = false;
-
     @Final
     @Shadow
     private Minecraft minecraft;
@@ -222,7 +219,9 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
     }
 
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V", ordinal = 0, shift = Shift.AFTER))
-    private void vivecraft$renderVrStuffPart1(CallbackInfo ci, @Local(ordinal = 0) float partialTick) {
+    private void vivecraft$renderVrStuffPart1(
+        CallbackInfo ci, @Local(ordinal = 0) float partialTick, @Share("guiRendered") LocalBooleanRef guiRendered)
+    {
         if (RenderPassType.isVanilla()) return;
 
         if (this.transparencyChain != null) {
@@ -234,7 +233,7 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
             {
                 // shaders active, and render gui before translucents
                 VREffectsHelper.renderVrFast(partialTick, true);
-                this.vivecraft$guiRendered = true;
+                guiRendered.set(true);
             }
         }
     }
@@ -251,7 +250,7 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
         {
             // no shaders, or shaders, and gui after translucents
             VREffectsHelper.renderVrFast(partialTick, true);
-            this.vivecraft$guiRendered = true;
+            guiRendered.set(true);
         }
     }
 
@@ -275,8 +274,6 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
             RenderSystem.getModelViewStack().popMatrix();
             RenderSystem.applyModelViewMatrix();
         }
-        // reset for next frame
-        this.vivecraft$guiRendered = false;
     }
 
     @WrapOperation(method = "renderHitOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;renderShape(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/phys/shapes/VoxelShape;DDDFFFF)V"))
