@@ -49,7 +49,7 @@ public class PostChainVRMixin {
                 // gui has no world renderpass
                 if (pass == RenderPass.GUI) {
                     this.vivecraft$VRPostChains.put(pass,
-                        new PostChain(textureManager, resourceProvider, GuiHandler.GUI_FRAMEBUFFER, name));
+                        new PostChain(textureManager, resourceManager, GuiHandler.GUI_FRAMEBUFFER, name));
                     continue;
                 }
 
