@@ -136,6 +136,14 @@ public interface VRClientAPI {
     float getWorldScale();
 
     /**
+     * Sets the amount of ticks of history wanted for {@link #getHistoricalVRPoses()}. Any value larger than 200 will
+     * be capped at 200.
+     * @param maxTicksBack The maximum number of ticks of history wanted.
+     * @throws IllegalArgumentException If a non-positive number is supplied.
+     */
+    void setTicksOfHistory(int maxTicksBack) throws IllegalArgumentException;
+
+    /**
      * Returns the history of VR poses for the player. Must be called at least once by some caller before the pose
      * history is populated.
      *

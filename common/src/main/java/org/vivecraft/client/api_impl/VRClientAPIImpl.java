@@ -15,24 +15,29 @@ import org.vivecraft.client_vr.provider.ControllerType;
 public final class VRClientAPIImpl implements VRClientAPI {
 
     public static final VRClientAPIImpl INSTANCE = new VRClientAPIImpl();
+    // If updated, should also update Javadocs in VRClientAPI
+    private static final int MAX_CONFIGURABLE_HISTORY_TICKS = 200;
 
     private final VRPoseHistoryImpl poseHistory = new VRPoseHistoryImpl();
-    private boolean gatherPoseHistory = false;
+    private int maxPoseHistorySize = 0;
 
     private VRClientAPIImpl() {
     }
 
-    public void clearAndDisablePoseHistory() {
+    public void clearPoseHistory() {
         this.poseHistory.clear();
-        gatherPoseHistory = false;
     }
 
     public void addPoseToHistory(VRPose pose) {
         this.poseHistory.addPose(pose);
     }
 
-    public boolean gatherPoseHistory() {
-        return this.gatherPoseHistory;
+    public int maxPoseHistorySize() {
+        return this.maxPoseHistorySize;
+    }
+
+    public void setMaxPoseHistorySize(int newSize) {
+        this.maxPoseHistorySize = Math.max(this.maxPoseHistorySize, newSize);
     }
 
     @Nullable
@@ -138,12 +143,19 @@ public final class VRClientAPIImpl implements VRClientAPI {
     }
 
     @Override
+    public void setTicksOfHistory(int maxTicksBack) throws IllegalArgumentException {
+        if (maxTicksBack <= 0) {
+            throw new IllegalArgumentException("Must call setTicksOfHistory() with a positive number.");
+        }
+        setMaxPoseHistorySize(Math.min(maxTicksBack, MAX_CONFIGURABLE_HISTORY_TICKS));
+    }
+
+    @Override
     @Nullable
     public VRPoseHistory getHistoricalVRPoses() {
         if (!isVRActive()) {
             return null;
         }
-        gatherPoseHistory = true;
         return this.poseHistory;
     }
 

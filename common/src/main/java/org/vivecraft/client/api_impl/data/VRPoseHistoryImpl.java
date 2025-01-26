@@ -1,10 +1,12 @@
 package org.vivecraft.client.api_impl.data;
 
 import net.minecraft.world.phys.Vec3;
+import org.vivecraft.api.client.VRClientAPI;
 import org.vivecraft.api.client.data.VRPoseHistory;
 import org.vivecraft.api.data.VRBodyPart;
 import org.vivecraft.api.data.VRBodyPartData;
 import org.vivecraft.api.data.VRPose;
+import org.vivecraft.client.api_impl.VRClientAPIImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,6 +16,7 @@ import java.util.stream.DoubleStream;
 
 public class VRPoseHistoryImpl implements VRPoseHistory {
 
+    // Holds historical VRPose data. The index into here is simply the number of ticks back that data is.
     private final LinkedList<VRPose> dataQueue = new LinkedList<>();
 
     public VRPoseHistoryImpl() {
@@ -21,7 +24,7 @@ public class VRPoseHistoryImpl implements VRPoseHistory {
 
     public void addPose(VRPose pose) {
         this.dataQueue.addFirst(pose);
-        if (this.dataQueue.size() > VRPoseHistory.MAX_TICKS_BACK + 1) {
+        if (this.dataQueue.size() > maxTicksOfHistory() + 1) {
             this.dataQueue.removeLast();
         }
     }
@@ -54,12 +57,15 @@ public class VRPoseHistoryImpl implements VRPoseHistory {
     public Vec3 netMovement(VRBodyPart bodyPart, int maxTicksBack) throws IllegalArgumentException {
         checkPartNonNull(bodyPart);
         checkTicksBack(maxTicksBack);
-        VRBodyPartData currentData = this.dataQueue.getLast().getBodyPartData(bodyPart);
+        if (this.dataQueue.size() <= 1) {
+            return Vec3.ZERO;
+        }
+        VRBodyPartData currentData = this.dataQueue.getFirst().getBodyPartData(bodyPart);
         if (currentData == null) {
             return null;
         }
         Vec3 current = currentData.getPos();
-        VRBodyPartData oldData = getOldPose(maxTicksBack).getBodyPartData(bodyPart);
+        VRBodyPartData oldData = this.dataQueue.get(maxTicksBack).getBodyPartData(bodyPart);
         if (oldData == null) {
             return null;
         }
@@ -71,6 +77,9 @@ public class VRPoseHistoryImpl implements VRPoseHistory {
     public Vec3 averageVelocity(VRBodyPart bodyPart, int maxTicksBack) throws IllegalArgumentException {
         checkPartNonNull(bodyPart);
         checkTicksBack(maxTicksBack);
+        if (this.dataQueue.size() <= 1) {
+            return Vec3.ZERO;
+        }
         maxTicksBack = getNumTicksBack(maxTicksBack);
         List<Vec3> diffs = new ArrayList<>(maxTicksBack);
         for (int i = 0; i < maxTicksBack; i++) {
@@ -97,6 +106,9 @@ public class VRPoseHistoryImpl implements VRPoseHistory {
     public double averageSpeed(VRBodyPart bodyPart, int maxTicksBack) throws IllegalArgumentException {
         checkPartNonNull(bodyPart);
         checkTicksBack(maxTicksBack);
+        if (this.dataQueue.size() <= 1) {
+            return 0;
+        }
         maxTicksBack = getNumTicksBack(maxTicksBack);
         List<Double> speeds = new ArrayList<>(maxTicksBack);
         for (int i = 0; i < maxTicksBack; i++) {
@@ -114,6 +126,9 @@ public class VRPoseHistoryImpl implements VRPoseHistory {
     public Vec3 averagePosition(VRBodyPart bodyPart, int maxTicksBack) throws IllegalArgumentException {
         checkPartNonNull(bodyPart);
         checkTicksBack(maxTicksBack);
+        if (this.dataQueue.size() <= 1) {
+            return VRClientAPI.instance().getPreTickWorldPose().getBodyPartData(bodyPart).getPos();
+        }
         maxTicksBack = getNumTicksBack(maxTicksBack);
         List<Vec3> positions = new ArrayList<>(maxTicksBack);
         for (VRPose pose : dataQueue) {
@@ -134,8 +149,8 @@ public class VRPoseHistoryImpl implements VRPoseHistory {
     }
 
     private void checkTicksBack(int ticksBack) {
-        if (ticksBack < 0 || ticksBack > VRPoseHistory.MAX_TICKS_BACK) {
-            throw new IllegalArgumentException("Value must be between 0 and " + VRPoseHistory.MAX_TICKS_BACK + ".");
+        if (ticksBack < 0 || ticksBack > maxTicksOfHistory()) {
+            throw new IllegalArgumentException("Value must be between 0 and " + maxTicksOfHistory() + ".");
         }
     }
 
@@ -145,19 +160,15 @@ public class VRPoseHistoryImpl implements VRPoseHistory {
         }
     }
 
-    private VRPose getOldPose(int maxTicksBack) {
-        if (this.dataQueue.size() <= maxTicksBack) {
-            return this.dataQueue.getFirst();
-        } else {
-            return this.dataQueue.get(this.dataQueue.size() - maxTicksBack - 1);
-        }
-    }
-
     private int getNumTicksBack(int maxTicksBack) {
         if (this.dataQueue.size() <= maxTicksBack) {
             return this.dataQueue.size() - 1;
         } else {
             return maxTicksBack;
         }
+    }
+
+    private int maxTicksOfHistory() {
+        return VRClientAPIImpl.INSTANCE.maxPoseHistorySize();
     }
 }
