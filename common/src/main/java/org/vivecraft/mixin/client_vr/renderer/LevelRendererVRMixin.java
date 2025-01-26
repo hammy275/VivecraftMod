@@ -71,9 +71,13 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
     @Unique
     private Entity vivecraft$renderedEntity;
 
+    @Unique
+    private boolean vivecraft$guiRendered = false;
+
     @Final
     @Shadow
     private Minecraft minecraft;
+
     @Shadow
     private ClientLevel level;
     @Shadow
@@ -232,7 +236,7 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
             {
                 // shaders active, and render gui before translucents
                 VREffectsHelper.renderVrFast(partialTick, true);
-                guiRendered.set(true);
+                this.vivecraft$guiRendered = true;
             }
         }
     }
@@ -249,7 +253,7 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
         {
             // no shaders, or shaders, and gui after translucents
             VREffectsHelper.renderVrFast(partialTick, true);
-            guiRendered.set(true);
+            this.vivecraft$guiRendered = true;
         }
     }
 
@@ -273,6 +277,8 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
             RenderSystem.getModelViewStack().popMatrix();
             RenderSystem.applyModelViewMatrix();
         }
+        // reset for next frame
+        this.vivecraft$guiRendered = false;
     }
 
     @WrapOperation(method = "renderHitOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;renderShape(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/phys/shapes/VoxelShape;DDDFFFF)V"))
