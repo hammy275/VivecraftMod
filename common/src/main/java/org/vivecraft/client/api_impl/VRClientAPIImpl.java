@@ -143,9 +143,9 @@ public final class VRClientAPIImpl implements VRClientAPI {
     }
 
     @Override
-    public void setTicksOfHistory(int maxTicksBack) throws IllegalArgumentException {
+    public void requestTicksOfHistory(int maxTicksBack) throws IllegalArgumentException {
         if (maxTicksBack <= 0) {
-            throw new IllegalArgumentException("Must call setTicksOfHistory() with a positive number.");
+            throw new IllegalArgumentException("Must call requestTicksOfHistory() with a positive number.");
         }
         setMaxPoseHistorySize(Math.min(maxTicksBack, MAX_CONFIGURABLE_HISTORY_TICKS));
     }
