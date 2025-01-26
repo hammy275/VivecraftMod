@@ -337,13 +337,13 @@ public class ServerUtil {
      * @param vivePlayer vive vivePlayer to spawn particles for
      */
     public static void debugParticleAxes(ServerVivePlayer vivePlayer) {
-        if (vivePlayer.isVR() && vivePlayer.vrPlayerState != null) {
+        if (vivePlayer.isVR() && vivePlayer.vrPlayerState() != null) {
             for(VRBodyPart bodyPart : VRBodyPart.values()) {
-                if (bodyPart.availableInMode(vivePlayer.vrPlayerState.fbtMode()) && bodyPart != VRBodyPart.HMD) {
+                if (bodyPart.availableInMode(vivePlayer.vrPlayerState().fbtMode()) && bodyPart != VRBodyPart.HMD) {
                     debugParticleAxes(
                         vivePlayer.player.serverLevel(),
                         vivePlayer.getBodyPartPos(bodyPart),
-                        vivePlayer.vrPlayerState.getBodyPartPose(bodyPart).orientation());
+                        vivePlayer.vrPlayerState().getBodyPartPose(bodyPart).orientation());
                 }
             }
 
@@ -351,7 +351,7 @@ public class ServerUtil {
                 debugParticleAxes(
                     vivePlayer.player.serverLevel(),
                     vivePlayer.getHMDPos(),
-                    vivePlayer.vrPlayerState.hmd().orientation());
+                    vivePlayer.vrPlayerState().hmd().orientation());
             }
         }
     }

@@ -237,7 +237,11 @@ public class VRPlayer {
             this.dh.vrSettings.worldRotation = this.dh.vr.seatedRot;
         }
 
-        VRClientAPIImpl.INSTANCE.addPosesToHistory(this.vrdata_world_pre.asVRPose());
+        // Gather VRPose history if some API consumer wants it and we're in a non-paused world.
+        if (VRClientAPIImpl.INSTANCE.gatherPoseHistory() && this.mc.level != null &&
+            (this.mc.getSingleplayerServer() == null || !this.mc.getSingleplayerServer().isPaused())) {
+            VRClientAPIImpl.INSTANCE.addPoseToHistory(this.vrdata_world_pre.asVRPose());
+        }
     }
 
     public void postTick() {

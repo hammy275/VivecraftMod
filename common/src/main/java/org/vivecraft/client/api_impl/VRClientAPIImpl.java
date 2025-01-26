@@ -17,16 +17,22 @@ public final class VRClientAPIImpl implements VRClientAPI {
     public static final VRClientAPIImpl INSTANCE = new VRClientAPIImpl();
 
     private final VRPoseHistoryImpl poseHistory = new VRPoseHistoryImpl();
+    private boolean gatherPoseHistory = false;
 
     private VRClientAPIImpl() {
     }
 
-    public void clearHistories() {
+    public void clearAndDisablePoseHistory() {
         this.poseHistory.clear();
+        gatherPoseHistory = false;
     }
 
-    public void addPosesToHistory(VRPose pose) {
+    public void addPoseToHistory(VRPose pose) {
         this.poseHistory.addPose(pose);
+    }
+
+    public boolean gatherPoseHistory() {
+        return this.gatherPoseHistory;
     }
 
     @Nullable
@@ -137,6 +143,7 @@ public final class VRClientAPIImpl implements VRClientAPI {
         if (!isVRActive()) {
             return null;
         }
+        gatherPoseHistory = true;
         return this.poseHistory;
     }
 

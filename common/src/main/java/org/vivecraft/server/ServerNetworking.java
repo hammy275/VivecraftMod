@@ -182,7 +182,7 @@ public class ServerNetworking {
                 }
             }
             case DRAW -> vivePlayer.draw = ((DrawPayloadC2S) c2sPayload).draw();
-            case VR_PLAYER_STATE -> vivePlayer.vrPlayerState = ((VRPlayerStatePayloadC2S) c2sPayload).playerState();
+            case VR_PLAYER_STATE -> vivePlayer.setVrPlayerState(((VRPlayerStatePayloadC2S) c2sPayload).playerState());
             case WORLDSCALE -> vivePlayer.worldScale = ((WorldScalePayloadC2S) c2sPayload).worldScale();
             case HEIGHT -> vivePlayer.heightScale = ((HeightPayloadC2S) c2sPayload).heightScale();
             case TELEPORT -> {
@@ -239,7 +239,7 @@ public class ServerNetworking {
                     LegacyHeadDataPayloadC2S headData = (LegacyHeadDataPayloadC2S) playerData
                         .get(PayloadIdentifier.HEADDATA);
 
-                    vivePlayer.vrPlayerState = new VrPlayerState(
+                    vivePlayer.setVrPlayerState(new VrPlayerState(
                         headData.seated(), // isSeated
                         headData.hmdPose(), // head pose
                         controller0Data.leftHanded(), // leftHanded 0
@@ -249,7 +249,7 @@ public class ServerNetworking {
                         FBTMode.ARMS_ONLY, null,
                         null, null,
                         null, null,
-                        null, null);
+                        null, null));
 
                     LEGACY_DATA_MAP.remove(player.getUUID());
                 }
@@ -287,10 +287,10 @@ public class ServerNetworking {
     public static void sendVrPlayerStateToClients(ServerVivePlayer vivePlayer) {
         // create the packets here, to try to avoid unnecessary memory copies when creating multiple packets
         Packet<?> legacyPacket = Xplat.getS2CPacket(
-            new UberPacketPayloadS2C(vivePlayer.player.getUUID(), new VrPlayerState(vivePlayer.vrPlayerState, 0),
+            new UberPacketPayloadS2C(vivePlayer.player.getUUID(), new VrPlayerState(vivePlayer.vrPlayerState(), 0),
                 vivePlayer.worldScale, vivePlayer.heightScale));
         Packet<?> newPacket = Xplat.getS2CPacket(
-            new UberPacketPayloadS2C(vivePlayer.player.getUUID(), vivePlayer.vrPlayerState, vivePlayer.worldScale,
+            new UberPacketPayloadS2C(vivePlayer.player.getUUID(), vivePlayer.vrPlayerState(), vivePlayer.worldScale,
                 vivePlayer.heightScale));
 
         sendPacketToTrackingPlayers(vivePlayer, (version) -> version < 1 ? legacyPacket : newPacket);

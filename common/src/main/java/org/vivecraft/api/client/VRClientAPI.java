@@ -136,7 +136,8 @@ public interface VRClientAPI {
     float getWorldScale();
 
     /**
-     * Returns the history of VR poses for the player. Will return null if the player isn't in VR.
+     * Returns the history of VR poses for the player. Must be called at least once by some caller before the pose
+     * history is populated.
      *
      * @return The history of VR poses for the player, or null if the player isn't in VR.
      */

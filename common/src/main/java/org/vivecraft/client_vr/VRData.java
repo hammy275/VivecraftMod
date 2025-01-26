@@ -66,6 +66,8 @@ public class VRData {
     // pose positions get scaled by that
     public float worldScale;
 
+    private VRPose vrPose;
+
     public VRData(Vec3 origin, float walkMul, float worldScale, float rotation) {
         ClientDataHolderVR dataHolder = ClientDataHolderVR.getInstance();
         MCVR mcVR = dataHolder.vr;
@@ -368,21 +370,24 @@ public class VRData {
      * @return this data in a manner better-suited for the API
      */
     public VRPose asVRPose() {
-        return new VRPoseImpl(
-            this.hmd.asVRBodyPart(),
-            this.c0.asVRBodyPart(),
-            this.c1.asVRBodyPart(),
-            getDataIfAvailable(this.foot_right, this.fbtMode.bodyPartAvailable(VRBodyPart.RIGHT_FOOT)),
-            getDataIfAvailable(this.foot_left, this.fbtMode.bodyPartAvailable(VRBodyPart.LEFT_FOOT)),
-            getDataIfAvailable(this.waist, this.fbtMode.bodyPartAvailable(VRBodyPart.WAIST)),
-            getDataIfAvailable(this.knee_right, this.fbtMode.bodyPartAvailable(VRBodyPart.RIGHT_KNEE)),
-            getDataIfAvailable(this.knee_left, this.fbtMode.bodyPartAvailable(VRBodyPart.LEFT_KNEE)),
-            getDataIfAvailable(this.elbow_right, this.fbtMode.bodyPartAvailable(VRBodyPart.RIGHT_ELBOW)),
-            getDataIfAvailable(this.elbow_left, this.fbtMode.bodyPartAvailable(VRBodyPart.LEFT_ELBOW)),
-            ClientDataHolderVR.getInstance().vrSettings.seated,
-            ClientDataHolderVR.getInstance().vrSettings.reverseHands,
-            this.fbtMode
-        );
+        if (vrPose == null) {
+            vrPose = new VRPoseImpl(
+                this.hmd.asVRBodyPart(),
+                this.c0.asVRBodyPart(),
+                this.c1.asVRBodyPart(),
+                getDataIfAvailable(this.foot_right, this.fbtMode.bodyPartAvailable(VRBodyPart.RIGHT_FOOT)),
+                getDataIfAvailable(this.foot_left, this.fbtMode.bodyPartAvailable(VRBodyPart.LEFT_FOOT)),
+                getDataIfAvailable(this.waist, this.fbtMode.bodyPartAvailable(VRBodyPart.WAIST)),
+                getDataIfAvailable(this.knee_right, this.fbtMode.bodyPartAvailable(VRBodyPart.RIGHT_KNEE)),
+                getDataIfAvailable(this.knee_left, this.fbtMode.bodyPartAvailable(VRBodyPart.LEFT_KNEE)),
+                getDataIfAvailable(this.elbow_right, this.fbtMode.bodyPartAvailable(VRBodyPart.RIGHT_ELBOW)),
+                getDataIfAvailable(this.elbow_left, this.fbtMode.bodyPartAvailable(VRBodyPart.LEFT_ELBOW)),
+                ClientDataHolderVR.getInstance().vrSettings.seated,
+                ClientDataHolderVR.getInstance().vrSettings.reverseHands,
+                this.fbtMode
+            );
+        }
+        return vrPose;
     }
 
     @Nullable

@@ -153,6 +153,6 @@ public class VRState {
             // this reloads any PostChain, at least in vanilla
             Minecraft.getInstance().levelRenderer.onResourceManagerReload(Minecraft.getInstance().getResourceManager());
         }
-        VRClientAPIImpl.INSTANCE.clearHistories();
+        VRClientAPIImpl.INSTANCE.clearAndDisablePoseHistory();
     }
 }

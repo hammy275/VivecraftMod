@@ -16,7 +16,8 @@ import javax.annotation.Nullable;
 public class ServerVivePlayer {
     // player movement state
     @Nullable
-    public VrPlayerState vrPlayerState;
+    private VrPlayerState vrPlayerState;
+    private VRPose vrPlayerStateAsPose;
     // how much the player is drawing the roomscale bow
     public float draw;
     public float worldScale = 1.0F;
@@ -176,10 +177,23 @@ public class ServerVivePlayer {
         return this.vrPlayerState.leftHanded();
     }
 
+    @Nullable
+    public VrPlayerState vrPlayerState() {
+        return this.vrPlayerState;
+    }
+
+    public void setVrPlayerState(VrPlayerState vrPlayerState) {
+        this.vrPlayerState = vrPlayerState;
+        this.vrPlayerStateAsPose = null;
+    }
+
     public VRPose asVRPose() {
         if (this.vrPlayerState == null) {
             return null;
         }
-        return this.vrPlayerState.asPose(player.position());
+        if (this.vrPlayerStateAsPose == null) {
+            this.vrPlayerStateAsPose = this.vrPlayerState.asVRPose(player.position());
+        }
+        return this.vrPlayerStateAsPose;
     }
 }

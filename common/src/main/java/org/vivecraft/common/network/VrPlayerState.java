@@ -244,7 +244,7 @@ public record VrPlayerState(boolean seated, Pose hmd, boolean leftHanded, Pose m
      *
      * @return This object as a pose for use with the API.
      */
-    public VRPoseImpl asPose(Vec3 playerPos) {
+    public VRPoseImpl asVRPose(Vec3 playerPos) {
         return new VRPoseImpl(
             this.hmd.asBodyPartData(playerPos),
             this.mainHand.asBodyPartData(playerPos),
