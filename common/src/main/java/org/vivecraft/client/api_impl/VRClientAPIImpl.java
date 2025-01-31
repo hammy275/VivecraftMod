@@ -149,7 +149,7 @@ public final class VRClientAPIImpl implements VRClientAPI {
     @Override
     @Nullable
     public VRPoseHistory getHistoricalVRPoses() {
-        if (!isVRActive()) {
+        if (!isVRActive() || this.maxPoseHistorySize <= 0) {
             return null;
         }
         return this.poseHistory;

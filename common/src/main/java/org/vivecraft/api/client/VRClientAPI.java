@@ -144,10 +144,11 @@ public interface VRClientAPI {
     void requestTicksOfHistory(int maxTicksBack) throws IllegalArgumentException;
 
     /**
-     * Returns the history of VR poses for the player. Must be called at least once by some caller before the pose
-     * history is populated.
+     * Returns the history of VR poses for the player. One should make one call to {@link #requestTicksOfHistory(int)}
+     * before calling this method to inform Vivecraft of the amount of history to keep.
      *
-     * @return The history of VR poses for the player, or null if the player isn't in VR.
+     * @return The history of VR poses for the player. Will be null if the player isn't in VR or if
+     *         {@link #requestTicksOfHistory(int)} has yet to be called.
      */
     @Nullable
     VRPoseHistory getHistoricalVRPoses();
