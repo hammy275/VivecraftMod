@@ -51,7 +51,9 @@ dependencies {
     modApi("com.terraformersmc:modmenu:11.0.3") { exclude group: "net.fabricmc" exclude group: "net.fabricmc.fabric-api" }
 
     // for immersive portals compat
-    modCompileOnly('com.github.iPortalTeam:ImmersivePortalsMod:v5.1.7-mc1.20.4') { exclude group: "net.fabricmc" exclude group: "net.fabricmc.fabric-api" }
+    modApi('maven.modrinth:immersiveportals:v6.0.6-mc1.21.1')
+    modApi('maven.modrinth:dimlib:v1.1.0-mc1.21.1')
+    modApi('maven.modrinth:midnightlib:1.6.9+1.21-fabric')
 
     // needed for resource loading
     include(modImplementation(fabricApi.module("fabric-resource-loader-v0", rootProject.fabric_api_version)))
