@@ -24,6 +24,7 @@ import org.vivecraft.client_vr.gameplay.VRMovementStyle;
 import org.vivecraft.client_vr.render.helpers.RenderHelper;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.data.BlockTags;
+import org.vivecraft.mod_compat_vr.immersiveportals.ImmersivePortalsHelper;
 
 import java.util.Random;
 
@@ -293,6 +294,16 @@ public class TeleportTracker extends Tracker {
                     ClipContext.Block.COLLIDER,
                     ClipContext.Fluid.ANY,
                     player));
+
+            if (ImmersivePortalsHelper.isLoaded()) {
+                if (ImmersivePortalsHelper.positionContainsPortalBlock(this.mc.level, newPos)) {
+                    break;
+                }
+                Vec3 lastPos = i == 0 ? null : this.movementTeleportArc[i - 1];
+                if (lastPos != null && ImmersivePortalsHelper.rayIntersectsPortal(this.mc.level, lastPos, newPos)) {
+                    break;
+                }
+            }
 
             if (blockhitresult.getType() != HitResult.Type.MISS) {
                 this.movementTeleportArc[i] = blockhitresult.getLocation();
